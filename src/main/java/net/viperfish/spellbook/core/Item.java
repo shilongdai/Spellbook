@@ -2,19 +2,18 @@ package net.viperfish.spellbook.core;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
 import java.util.Objects;
 
 @DatabaseTable(tableName = "Item")
 public class Item {
 
-	@DatabaseField(id = true)
+	@DatabaseField(generatedId = true)
 	private Long id;
-	@DatabaseField
+	@DatabaseField(width = 100)
 	private String name;
 	@DatabaseField
 	private double amount;
-	@DatabaseField
+	@DatabaseField(width = 1000)
 	private String desc;
 
 	public Item(String name, double amount, String desc) {

@@ -1,27 +1,28 @@
 package net.viperfish.spellbook.core;
 
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
-
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Objects;
 
 
 @DatabaseTable(tableName = "Spell")
 public class Spell {
 
-	@DatabaseField(id = true)
+	@DatabaseField(generatedId = true)
 	private Long id;
-	@DatabaseField
+	@DatabaseField(width = 100)
 	private String name;
-	@DatabaseField
+	@DatabaseField(width = 50)
 	private String duration;
-	@DatabaseField
+	@DatabaseField(width = 50)
 	private String castingTime;
-	@DatabaseField
+	@DatabaseField(width = 1000)
 	private String description;
-	private List<ItemRequirement> requirements;
+	@ForeignCollectionField
+	private Collection<ItemRequirement> requirements;
 
 	public Spell(String name, String duration, String castingTime, String description) {
 		this();
@@ -75,7 +76,7 @@ public class Spell {
 		this.description = description;
 	}
 
-	public List<ItemRequirement> getRequirements() {
+	public Collection<ItemRequirement> getRequirements() {
 		return requirements;
 	}
 

@@ -1,11 +1,9 @@
 package net.viperfish.spellbook.task;
 
-import net.viperfish.spellbook.core.Callback;
-import net.viperfish.spellbook.core.TaskScheduler;
-
 import java.util.concurrent.Callable;
+import net.viperfish.spellbook.core.Callback;
 
-public class SequentialTaskScheduler implements TaskScheduler {
+class SequentialTaskScheduler implements TaskScheduler {
 
 	@Override
 	public void init() {
@@ -13,9 +11,9 @@ public class SequentialTaskScheduler implements TaskScheduler {
 	}
 
 	@Override
-	public void submit(Callable<?> task, Callback callback) {
+	public <S> void submit(Callable<S> task, Callback<? super S> callback) {
 		Exception e = null;
-		Object result = null;
+		S result = null;
 		try {
 			result = task.call();
 		} catch (Exception exp) {

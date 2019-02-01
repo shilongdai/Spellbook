@@ -2,26 +2,25 @@ package net.viperfish.spellbook.core;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
 import java.util.Objects;
 
 @DatabaseTable(tableName = "ItemRequirement")
 public class ItemRequirement {
 
-	@DatabaseField(id = true)
+	@DatabaseField(generatedId = true)
 	private Long id;
-	@DatabaseField
-	private Long itemId;
+	@DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "spell")
+	private Spell spell;
 	@DatabaseField
 	private double amount;
+	@DatabaseField(foreign = true, columnName = "item")
+	private Item item;
 
-	public ItemRequirement(Long itemId, double amount) {
-		this.itemId = itemId;
+	public ItemRequirement(double amount) {
 		this.amount = amount;
 	}
 
 	public ItemRequirement() {
-		this.itemId = 0L;
 		this.amount = 0.00;
 	}
 
@@ -33,12 +32,12 @@ public class ItemRequirement {
 		this.id = id;
 	}
 
-	public Long getItemId() {
-		return itemId;
+	public Spell getSpell() {
+		return spell;
 	}
 
-	public void setItemId(Long itemId) {
-		this.itemId = itemId;
+	public void setSpell(Spell spell) {
+		this.spell = spell;
 	}
 
 	public double getAmount() {
@@ -49,18 +48,30 @@ public class ItemRequirement {
 		this.amount = amount;
 	}
 
+	public Item getItem() {
+		return item;
+	}
+
+	public void setItem(Item item) {
+		this.item = item;
+	}
+
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
 		ItemRequirement that = (ItemRequirement) o;
 		return Double.compare(that.amount, amount) == 0 &&
-				Objects.equals(id, that.id) &&
-				Objects.equals(itemId, that.itemId);
+			Objects.equals(id, that.id) &&
+			Objects.equals(item, that.item);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, itemId, amount);
+		return Objects.hash(id, amount, item);
 	}
 }

@@ -1,7 +1,7 @@
 package net.viperfish.spellbook.core;
 
-public interface Callback {
+public interface Callback<T> {
 
-	void call(Object result, Exception error);
+	void call(T result, Exception error);
 
 }

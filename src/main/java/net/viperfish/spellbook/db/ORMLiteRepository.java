@@ -6,18 +6,17 @@ import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.table.TableUtils;
-import net.viperfish.spellbook.core.CRUDRepository;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import net.viperfish.spellbook.core.CRUDRepository;
 
 public class ORMLiteRepository<ID, T> implements CRUDRepository<ID, T> {
 
-	private JdbcConnectionSource conn;
-	private Dao<T, ID> dao;
-	private Class<T> type;
+	protected JdbcConnectionSource conn;
+	protected Dao<T, ID> dao;
+	protected Class<T> type;
 
 	public ORMLiteRepository(JdbcConnectionSource connectionSource, Class<T> type) {
 		this.conn = connectionSource;
@@ -26,6 +25,7 @@ public class ORMLiteRepository<ID, T> implements CRUDRepository<ID, T> {
 
 	public void init() throws IOException {
 		try {
+			TableUtils.createTableIfNotExists(conn, type);
 			this.dao = DaoManager.createDao(conn, type);
 		} catch (SQLException e) {
 			throw new IOException(e);
