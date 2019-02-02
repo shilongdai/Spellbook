@@ -5,14 +5,15 @@ import com.j256.ormlite.jdbc.JdbcConnectionSource;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Scanner;
-import net.viperfish.spellbook.core.CRUDService;
 import net.viperfish.spellbook.core.Item;
 import net.viperfish.spellbook.core.ItemRequirement;
+import net.viperfish.spellbook.core.ItemService;
 import net.viperfish.spellbook.core.Spell;
+import net.viperfish.spellbook.core.SpellService;
 import net.viperfish.spellbook.db.ORMLiteRepository;
 import net.viperfish.spellbook.db.SpellOrmLiteRepository;
-import net.viperfish.spellbook.task.ItemService;
-import net.viperfish.spellbook.task.SpellService;
+import net.viperfish.spellbook.task.TaskItemService;
+import net.viperfish.spellbook.task.TaskSpellService;
 
 public class Bootstrap {
 
@@ -77,16 +78,16 @@ public class Bootstrap {
 		JdbcConnectionSource connectionSource = null;
 		ORMLiteRepository<Long, Spell> spellRepo = null;
 		ORMLiteRepository<Long, Item> itemRepo = null;
-		CRUDService<Long, Spell> spellService = null;
-		CRUDService<Long, Item> itemService = null;
+		SpellService spellService = null;
+		ItemService itemService = null;
 		try {
 			connectionSource = initConnection("./db");
 			spellRepo = new SpellOrmLiteRepository(connectionSource, Spell.class);
 			itemRepo = new ORMLiteRepository<>(connectionSource, Item.class);
 			spellRepo.init();
 			itemRepo.init();
-			spellService = new SpellService(spellRepo, itemRepo);
-			itemService = new ItemService(itemRepo);
+			spellService = new TaskSpellService(spellRepo, itemRepo);
+			itemService = new TaskItemService(itemRepo);
 			try (Scanner input = new Scanner(System.in)) {
 				while (true) {
 					System.out.print("spellbook>>");
@@ -113,8 +114,43 @@ public class Bootstrap {
 							spellService.execPersist(sp, new SpellAddedCallback());
 							break;
 						}
+						case "ri": {
+							System.out.print("Item ID:");
+							Long id = Long.parseLong(input.nextLine());
+							itemService.execDelete(id, new RemoveStuffCallback<>());
+							break;
+						}
+						case "rs": {
+							System.out.print("Spell ID:");
+							Long id = Long.parseLong(input.nextLine());
+							spellService.execDelete(id, new RemoveStuffCallback<>());
+							break;
+						}
+						case "cs": {
+							spellService.execGetCastable(new ListSpellCallback());
+							break;
+						}
+						case "ca": {
+							System.out.print("Item ID:");
+							Long id = Long.parseLong(input.nextLine());
+							System.out.print("Delta:");
+							Double delta = Double.parseDouble(input.nextLine());
+							itemService.execChangeAmount(id, delta, new ChangeItemCallback());
+							break;
+						}
+						case "fire": {
+							System.out.print("Spell ID:");
+							Long id = Long.parseLong(input.nextLine());
+							spellService.execSpell(id, new CastSpellCallback());
+							break;
+						}
 						case "quit": {
 							return;
+						}
+						default: {
+							if (!commandName.isEmpty()) {
+								System.out.println(commandName + " is not a valid command");
+							}
 						}
 					}
 				}

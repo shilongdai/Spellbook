@@ -13,7 +13,7 @@ public class ItemRequirement {
 	private Spell spell;
 	@DatabaseField
 	private double amount;
-	@DatabaseField(foreign = true, columnName = "item")
+	@DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = "item")
 	private Item item;
 
 	public ItemRequirement(double amount) {
